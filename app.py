@@ -20,10 +20,12 @@ from src.observability.mask import mask_hr_name
 from src.observability.tracer import read_events
 from src.state.models import ApprovalDecision
 from src.ui.palette import CATEGORICAL, PLOTLY_LAYOUT, STATUS
+from src.ui.theme import apply_theme, header_banner, status_pill
 
 ROLES = json.loads(open("config/roles.json").read())
 
 st.set_page_config(page_title="Pharma Sales Insight Agent", layout="wide", page_icon="💊")
+apply_theme()
 
 # ---------------------------------------------------------------------------
 # Session state
@@ -53,8 +55,13 @@ def request_approval(action_type: str):
 # ---------------------------------------------------------------------------
 # Sidebar — role, scope, filters
 # ---------------------------------------------------------------------------
-st.sidebar.title("💊 Pharma Sales Insight Agent")
-st.sidebar.caption("Analytics decision-support prototype — not a chatbot, not an autonomous decision-maker.")
+st.sidebar.markdown(
+    '<div class="pia-sidebar-brand">💊 Pharma Sales Insight Agent</div>'
+    '<div class="pia-sidebar-caption">Analytics decision-support prototype — '
+    "not a chatbot, not an autonomous decision-maker.</div>",
+    unsafe_allow_html=True,
+)
+st.sidebar.divider()
 
 role = st.sidebar.selectbox("Your role", list(ROLES.keys()))
 role_cfg = ROLES[role]
@@ -102,7 +109,10 @@ if df is not None:
 
     period_filter = st.sidebar.selectbox("Period", ["(All)"] + sorted(df["date"].unique()))
 
-st.title("Pharma Sales Insight Agent")
+header_banner(
+    "Pharma Sales Insight Agent",
+    "Evidence-based sales performance insight across Business Unit, Area, District, Territory, and Health Representative levels.",
+)
 
 tabs = st.tabs(["📤 Upload", "✅ Data Quality", "📊 Dashboard", "💬 Ask", "🔏 Approval", "🔍 Trace"])
 
@@ -152,8 +162,7 @@ with tabs[1]:
     if report is None:
         st.info("Upload a file first.")
     else:
-        color = {"pass": "green", "warning": "orange", "block": "red"}[report.status]
-        st.markdown(f"### Status: :{color}[{report.status.upper()}]")
+        st.markdown(f"#### Status: {status_pill(report.status)}", unsafe_allow_html=True)
         st.caption(f"{report.row_count} rows checked across columns: {', '.join(report.checked_columns)}")
         if not report.findings:
             st.success("No issues found.")
@@ -199,19 +208,23 @@ with tabs[2]:
 
         summary = compute_summary(scoped, filters, period_filter if period_filter != "(All)" else None)
 
-        c1, c2, c3, c4 = st.columns(4)
+        st.subheader("Key performance indicators")
+        c1, c2, c3 = st.columns(3)
         c1.metric("Actual Sales", summary["actual_sales"].display)
         c2.metric("Target Sales", summary["target_sales"].display)
         c3.metric("Achievement %", summary["achievement_pct"].display)
+
+        c4, c5 = st.columns(2)
         variance = summary["variance_to_target"]
         c4.metric("Variance to Target", variance.display, delta=None)
-
         if summary["growth_pct"].value is not None:
-            st.metric("Growth %", summary["growth_pct"].display)
+            c5.metric("Growth %", summary["growth_pct"].display)
         else:
-            st.caption(f"Growth %: N/A — {summary['growth_pct'].reason}")
+            c5.metric("Growth %", "N/A")
+            st.caption(f"Growth % unavailable — {summary['growth_pct'].reason}")
 
         st.divider()
+        st.subheader("Performance charts")
         col_a, col_b = st.columns(2)
 
         with col_a:
@@ -232,7 +245,9 @@ with tabs[2]:
             fig2.update_layout(**PLOTLY_LAYOUT)
             st.plotly_chart(fig2, use_container_width=True)
 
-        st.write("**Territory contribution % (within current filter scope)**")
+        st.divider()
+        st.subheader("Territory contribution %")
+        st.caption("Within current filter scope.")
         contrib = compute_contribution_breakdown(scoped, "territory", filters)
         contrib_df = pd.DataFrame(
             [{"territory": c.filters.get("territory"), "contribution_pct": c.value} for c in contrib if c.value is not None]
@@ -243,7 +258,8 @@ with tabs[2]:
             st.plotly_chart(fig3, use_container_width=True)
 
         st.divider()
-        st.write("**Row-level data (current filters)**")
+        st.subheader("Row-level data")
+        st.caption("Current filters applied.")
         can_view_hr = role_cfg["can_view_hr_level"] and is_approved(list(st.session_state.approvals.values()), "view_hr_level_detail")
         display_df = scoped.copy()
         if not can_view_hr:
@@ -291,7 +307,7 @@ with tabs[3]:
         state = st.session_state.workflow_state
         if state is not None:
             st.divider()
-            st.write(f"**Request ID:** `{state.request_id}`  |  **Dataset version:** `{state.dataset_version}`")
+            st.caption(f"Request ID `{state.request_id}` · Dataset version `{state.dataset_version}`")
 
             with st.expander("Execution plan & agent statuses", expanded=True):
                 for step in state.plan:
@@ -307,18 +323,21 @@ with tabs[3]:
 
             if state.final_output:
                 fo = state.final_output
+                st.subheader("Findings")
                 col_f, col_o = st.columns(2)
                 with col_f:
-                    st.write("**Facts** (deterministic calculations)")
-                    for f in fo.facts:
-                        st.write(f"- {f}")
+                    with st.container(border=True):
+                        st.markdown("**Facts** · deterministic calculations")
+                        for f in fo.facts:
+                            st.write(f"- {f}")
                 with col_o:
-                    st.write("**Observations**")
-                    for o in fo.observations:
-                        st.write(f"- {o}")
+                    with st.container(border=True):
+                        st.markdown("**Observations**")
+                        for o in fo.observations:
+                            st.write(f"- {o}")
 
                 if fo.hypotheses:
-                    st.write("**Hypotheses** _(labeled, require human validation)_")
+                    st.markdown('**Hypotheses** <span class="pia-note">labeled, require human validation</span>', unsafe_allow_html=True)
                     for h in fo.hypotheses:
                         st.write(f"- {h}")
                     if treat_hypothesis_as_confirmed:
@@ -333,12 +352,12 @@ with tabs[3]:
                             st.info("Approval required in the Approval tab before a hypothesis can be presented as confirmed.")
 
                 if fo.recommendations:
-                    st.write("**Recommendations** _(low-risk, reversible, subject to approval)_")
+                    st.markdown('**Recommendations** <span class="pia-note">low-risk, reversible, subject to approval</span>', unsafe_allow_html=True)
                     for r in fo.recommendations:
                         st.write(f"- {r}")
 
                 if fo.limitations:
-                    st.write("**Limitations**")
+                    st.markdown("**Limitations**")
                     for l in fo.limitations:
                         st.caption(f"⚠️ {l}")
 
