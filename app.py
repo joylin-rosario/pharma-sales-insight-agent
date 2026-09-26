@@ -114,7 +114,7 @@ header_banner(
     "Evidence-based sales performance insight across Business Unit, Area, District, Territory, and Health Representative levels.",
 )
 
-tabs = st.tabs(["📤 Upload", "✓ Data Quality", "📊 Dashboard", "💬 Ask", "🔏 Approval", "🔍 Trace"])
+tabs = st.tabs(["📤 Upload", "✓ Data Quality", "📊 Dashboard", "❓ Ask", "☑ Approval", "🔍 Trace"])
 
 # ---------------------------------------------------------------------------
 # Upload tab
