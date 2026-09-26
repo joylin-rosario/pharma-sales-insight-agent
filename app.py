@@ -114,7 +114,7 @@ header_banner(
     "Evidence-based sales performance insight across Business Unit, Area, District, Territory, and Health Representative levels.",
 )
 
-tabs = st.tabs(["📤 Upload", "✅ Data Quality", "📊 Dashboard", "💬 Ask", "🔏 Approval", "🔍 Trace"])
+tabs = st.tabs(["📤 Upload", "✓ Data Quality", "📊 Dashboard", "💬 Ask", "🔏 Approval", "🔍 Trace"])
 
 # ---------------------------------------------------------------------------
 # Upload tab
@@ -311,7 +311,7 @@ with tabs[3]:
 
             with st.expander("Execution plan & agent statuses", expanded=True):
                 for step in state.plan:
-                    status_icon = {"done": "✅", "failed": "❌", "running": "🔄", "planned": "⏳"}.get(step.status, "•")
+                    status_icon = {"done": "✓", "failed": "❌", "running": "🔄", "planned": "⏳"}.get(step.status, "•")
                     skill_txt = f" · skill: `{step.skill}`" if step.skill else ""
                     st.write(f"{status_icon} **{step.agent}** — {step.task}{skill_txt}")
 
@@ -401,7 +401,7 @@ with tabs[4]:
                 approver = st.text_input(f"Approver name ({action_type})", key=f"approver_{action_type}")
                 comment = st.text_area(f"Comment ({action_type})", key=f"comment_{action_type}")
                 col1, col2 = st.columns(2)
-                if col1.button("✅ Approve", key=f"approve_{action_type}", disabled=not approver):
+                if col1.button("✓ Approve", key=f"approve_{action_type}", disabled=not approver):
                     record_decision(record, approver, ApprovalDecision.APPROVED, comment)
                     st.rerun()
                 if col2.button("❌ Reject", key=f"reject_{action_type}", disabled=not approver):
@@ -436,7 +436,7 @@ with tabs[5]:
         )
         events = read_events(state.request_id)
         for ev in events:
-            status_icon = {"ok": "✅", "error": "❌", "blocked": "🛑", "unsupported_intent": "⚠️"}.get(ev["status"], "•")
+            status_icon = {"ok": "✓", "error": "❌", "blocked": "🛑", "unsupported_intent": "⚠️"}.get(ev["status"], "•")
             parts = [f"`{ev['timestamp']}`", status_icon, f"**{ev['workflow_step']}**"]
             if ev.get("agent"):
                 parts.append(f"agent={ev['agent']}")
