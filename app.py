@@ -20,11 +20,11 @@ from src.observability.mask import mask_hr_name
 from src.observability.tracer import read_events
 from src.state.models import ApprovalDecision
 from src.ui.palette import CATEGORICAL, PLOTLY_LAYOUT, STATUS
-from src.ui.theme import apply_theme, header_banner, status_pill
+from src.ui.theme import apply_theme, brand_mark, header_banner, status_pill
 
 ROLES = json.loads(open("config/roles.json").read())
 
-st.set_page_config(page_title="Pharma Sales Insight Agent", layout="wide", page_icon="💊")
+st.set_page_config(page_title="Pharma Sales Insight Agent", layout="wide", page_icon="📊")
 apply_theme()
 
 # ---------------------------------------------------------------------------
@@ -56,7 +56,7 @@ def request_approval(action_type: str):
 # Sidebar — role, scope, filters
 # ---------------------------------------------------------------------------
 st.sidebar.markdown(
-    '<div class="pia-sidebar-brand">💊 Pharma Sales Insight Agent</div>'
+    f'<div class="pia-sidebar-brand">{brand_mark(24)} Pharma Sales Insight Agent</div>'
     '<div class="pia-sidebar-caption">Analytics decision-support prototype — '
     "not a chatbot, not an autonomous decision-maker.</div>",
     unsafe_allow_html=True,
