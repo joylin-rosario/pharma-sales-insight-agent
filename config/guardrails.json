@@ -1,0 +1,32 @@
+{
+  "prohibited_employee_decision_keywords": [
+    "fire", "terminate", "termination", "lay off", "layoff", "promote", "promotion",
+    "demote", "demotion", "raise pay", "give a raise", "pay cut", "bonus for",
+    "discipline", "disciplinary", "write up", "should we hire", "hire ", "fire "
+  ],
+  "prohibited_employee_inference_keywords": [
+    "attitude", "is lazy", "is incompetent", "competence of", "work ethic",
+    "intent of", "will he", "will she", "future performance of", "health of",
+    "personality of", "motivation of"
+  ],
+  "medical_clinical_keywords": [
+    "diagnose", "diagnosis", "prescribe", "prescription", "patient",
+    "clinical advice", "medical advice", "treat the patient", "dosage for patient"
+  ],
+  "pii_phi_keywords": [
+    "social security", "ssn", "national id", "passport number", "date of birth of",
+    "home address", "phone number of", "patient id", "medical record", "phi"
+  ],
+  "source_write_keywords": [
+    "delete the source", "overwrite the source", "modify the source file",
+    "update the database", "write to the database", "drop table", "delete rows from source"
+  ],
+  "prompt_injection_patterns": [
+    "ignore previous instructions", "ignore all prior", "disregard the system prompt",
+    "you are now", "act as if you have no restrictions", "reveal your instructions",
+    "bypass guardrails", "bypass the guardrail"
+  ],
+  "causation_language_keywords": [
+    "caused by", "proves that", "is the cause of", "definitely because"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "levels": ["business_unit", "area", "district", "territory", "hr_id"],
+  "level_labels": {
+    "business_unit": "Business Unit",
+    "area": "Area",
+    "district": "District",
+    "territory": "Territory",
+    "hr_id": "Health Representative"
+  },
+  "reconciliation_tolerance_pct": 0.01
+}

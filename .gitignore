@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Runtime state and logs (short-lived per CLAUDE.md section 18; never committed)
+data/workflow_state.sqlite
+data/observability_log.jsonl
+data/dev_tool_log.jsonl
+
+# OS / editor
+.DS_Store
+.vscode/

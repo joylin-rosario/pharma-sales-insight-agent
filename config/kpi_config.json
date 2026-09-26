@@ -1,0 +1,12 @@
+{
+  "currency_decimals": 2,
+  "percent_decimals": 1,
+  "required_columns": [
+    "date", "business_unit", "area", "district", "territory",
+    "hr_id", "hr_name", "product", "sales_value", "target_value"
+  ],
+  "optional_columns": [
+    "prior_period_sales", "units_sold", "therapeutic_area",
+    "data_source", "refresh_timestamp"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "Sales Head": {
+    "scope_level": "business_unit",
+    "can_view_hr_level": false,
+    "description": "Enterprise and Business Unit overview only."
+  },
+  "Area Manager": {
+    "scope_level": "area",
+    "can_view_hr_level": false,
+    "description": "Area, District, and Territory drill-down."
+  },
+  "Territory Manager": {
+    "scope_level": "territory",
+    "can_view_hr_level": true,
+    "description": "Territory and authorized Health Representative views."
+  },
+  "Demo Admin": {
+    "scope_level": "business_unit",
+    "can_view_hr_level": true,
+    "description": "Synthetic-data upload and capstone demonstration; full scope for demo purposes."
+  }
+}
